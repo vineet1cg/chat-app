@@ -15,14 +15,12 @@ import { motion } from "framer-motion";
 import { useChat } from "../stores/chat";
 import {
   Avatar,
-  Brand,
   Button,
   ErrorNotice,
   IconButton,
   Input,
   SegmentedControl,
   Spinner,
-  ThemeMenu,
 } from "./ui";
 import { InstallButton } from "./Pwa";
 import { timeLabel } from "../lib/format";
@@ -108,34 +106,18 @@ export default function Sidebar({ onNew, onSettings }) {
     <aside
       aria-label="Conversations"
       className={cn(
-        "flex min-h-0 w-full flex-1 flex-col border-r border-border/80 bg-sidebar/85 backdrop-blur-2xl transition-all md:w-80 md:flex-none lg:w-88 xl:w-[350px]",
+        "flex min-h-0 min-w-0 w-full flex-1 flex-col bg-sidebar",
         state.activeId && "hidden md:flex",
       )}
     >
-      {/* Top Header */}
-      <div className="safe-top">
-        <div className="flex items-center justify-between px-5 pt-5 pb-4 md:px-6 md:pt-6">
-          <Brand small />
-          <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-1.5 rounded-full border border-border/80 bg-surface/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:inline-flex">
-              <span className="size-1.5 rounded-full bg-status" />
-              DIRECT
-            </span>
-            <div className="md:hidden">
-              <ThemeMenu />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Title & Compose Button */}
-      <div className="flex items-center justify-between px-5 pb-4 md:px-6">
+      <div className="flex items-center justify-between px-4 py-4">
         <div className="flex items-center gap-2.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="text-lg font-medium tracking-tight text-foreground">
             Messages
           </h1>
           {unreadCount > 0 && (
-            <span className="flex items-center justify-center rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+            <span className="flex items-center justify-center rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
               {unreadCount} new
             </span>
           )}
@@ -156,6 +138,7 @@ export default function Sidebar({ onNew, onSettings }) {
           className="pointer-events-none absolute left-3.5 top-3.5 z-10 text-muted-foreground"
         />
         <Input
+          id="conversation-search"
           aria-label="Search conversations"
           placeholder="Search conversations"
           value={query}
@@ -172,7 +155,7 @@ export default function Sidebar({ onNew, onSettings }) {
           </IconButton>
         ) : (
           <span className="pointer-events-none absolute right-3 top-2.5 hidden select-none rounded border border-border/80 bg-muted/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
-            ⌘K
+            /
           </span>
         )}
       </div>
@@ -186,7 +169,7 @@ export default function Sidebar({ onNew, onSettings }) {
           options={[
             {
               value: "all",
-              label: "All messages",
+              label: "All",
               count: state.conversations.length,
             },
             { value: "unread", label: "Unread", count: unreadCount },
@@ -205,7 +188,30 @@ export default function Sidebar({ onNew, onSettings }) {
       </div>
 
       {/* Conversations List */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto px-2 pb-3"
+        aria-label="Conversation list"
+        onKeyDown={(event) => {
+          if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key))
+            return;
+          const buttons = [
+            ...event.currentTarget.querySelectorAll("[data-conversation]"),
+          ];
+          const index = buttons.indexOf(document.activeElement);
+          if (index < 0) return;
+          event.preventDefault();
+          const next =
+            event.key === "Home"
+              ? 0
+              : event.key === "End"
+                ? buttons.length - 1
+                : (index +
+                    (event.key === "ArrowDown" ? 1 : -1) +
+                    buttons.length) %
+                  buttons.length;
+          buttons[next]?.focus();
+        }}
+      >
         {state.listError && (
           <ErrorNotice
             message={state.listError}
@@ -221,11 +227,19 @@ export default function Sidebar({ onNew, onSettings }) {
             return (
               <button
                 key={user._id}
-                onClick={() => state.selectConversation(user)}
+                data-conversation={user._id}
+                onClick={() => {
+                  state.selectConversation(user);
+                  requestAnimationFrame(() =>
+                    document.getElementById("chat-tile")?.focus(),
+                  );
+                }}
                 aria-current={isSelected ? "true" : undefined}
                 className={cn(
-                  "group relative my-1 flex w-full items-center gap-3.5 rounded-2xl p-3 text-left transition-all duration-150 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isSelected ? "bg-accent/90 shadow-xs" : "hover:bg-muted/70",
+                  "group relative my-1 flex w-full items-center gap-3 rounded-md border border-transparent p-3 text-left transition-colors duration-150  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  isSelected
+                    ? "border-primary/35 bg-accent"
+                    : "hover:bg-muted/70",
                 )}
               >
                 {/* Active indicator bar */}
@@ -269,7 +283,7 @@ export default function Sidebar({ onNew, onSettings }) {
                     </span>
 
                     {hasUnread && (
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground shadow-xs">
                         {state.unread[user._id] > 99
                           ? "99+"
                           : state.unread[user._id]}
@@ -315,12 +329,12 @@ export default function Sidebar({ onNew, onSettings }) {
       </div>
 
       {/* User Status & Preferences Footer */}
-      <div className="safe-bottom border-t border-border/80 bg-surface/50 p-3 backdrop-blur-xl">
+      <div className="safe-bottom border-t border-border/80 bg-surface/50 p-3 ">
         <InstallButton />
         <button
           onClick={onSettings}
           aria-label="Account and appearance settings"
-          className="mt-2 flex w-full items-center gap-3 rounded-2xl border border-transparent p-2 text-left transition-all duration-150 active:scale-[0.99] hover:border-border/60 hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-2 flex w-full items-center gap-3 rounded-2xl border border-transparent p-2 text-left transition-colors duration-150  hover:border-border/60 hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Avatar user={state.profile} size="avatar-small" />
           <span className="min-w-0 flex-1">
@@ -338,9 +352,9 @@ export default function Sidebar({ onNew, onSettings }) {
                       : "Connecting"
                 }
                 className={cn(
-                  "size-1.5 rounded-full",
+                  "size-1.5 rounded-md",
                   state.connection === "connected"
-                    ? "bg-status shadow-[0_0_6px_rgba(34,197,94,0.6)]"
+                    ? "bg-status "
                     : !state.networkOnline
                       ? "bg-destructive"
                       : "bg-muted-foreground animate-pulse",

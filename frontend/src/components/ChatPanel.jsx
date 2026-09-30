@@ -10,16 +10,15 @@ import {
   ChevronDown,
   Info,
   LoaderCircle,
+  Terminal,
   MessageCircle,
+  Columns2,
   Paperclip,
   Search,
-  ShieldCheck,
   Smile,
-  Sparkles,
   SquarePen,
   WifiOff,
   X,
-  Zap,
 } from "lucide-react";
 import { useChat } from "../stores/chat";
 import { dayLabel, messageDate, timeLabel } from "../lib/format";
@@ -43,71 +42,43 @@ export default function ChatPanel({ onNew }) {
 
   if (!activeId) {
     return (
-      <section className="relative hidden min-w-0 flex-1 flex-col items-center justify-center overflow-hidden bg-background/50 p-8 text-center md:flex">
-        {/* Ambient background glow */}
-        <div className="pointer-events-none absolute inset-0 hero-glow opacity-60" />
-        <div className="pointer-events-none absolute inset-0 chat-pattern opacity-30" />
-
-        <div className="relative z-10 flex max-w-md flex-col items-center">
-          <div className="relative mb-8 flex size-24 items-center justify-center rounded-3xl border border-primary/20 bg-gradient-to-br from-surface to-accent/60 shadow-xl shadow-primary/10 backdrop-blur-2xl">
-            <MessageCircle
-              size={44}
-              strokeWidth={1.4}
-              className="text-primary"
-            />
-            <span className="absolute -bottom-2 -right-2 flex size-9 items-center justify-center rounded-xl border border-border bg-surface text-primary shadow-sm backdrop-blur-xl">
-              <Sparkles size={16} />
-            </span>
+      <section className="relative hidden min-h-0 min-w-0 flex-1 flex-col items-center justify-center bg-surface p-6 md:flex">
+        <div className="w-full max-w-md">
+          <div className="mb-8 flex items-center gap-3 font-mono text-xs text-secondary">
+            <Terminal size={18} />
+            chime@workspace:~
           </div>
-
-          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-surface/75 px-3.5 py-1 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase shadow-xs backdrop-blur-xl">
-            <span className="size-1.5 rounded-full bg-status" />
-            Personal & Encrypted
-          </span>
-
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            A quiet space for what matters.
+          <h2 className="text-2xl font-medium tracking-tight">
+            Your conversations.
+            <br />
+            <span className="text-primary">In focus.</span>
           </h2>
-
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Select a conversation from the left to start catching up, or reach
-            out to someone new.
+          <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
+            Select a conversation in the master tile, or start a new one.
+            Everything you need, one shortcut away.
           </p>
-
-          <Button
-            size="default"
-            className="mt-7 gap-2 shadow-md hover:scale-[1.02]"
-            onClick={onNew}
-          >
+          <Button className="mt-6" onClick={onNew}>
             <SquarePen size={16} />
             New message
           </Button>
-
-          {/* Feature Highlights Grid */}
-          <div className="mt-12 grid grid-cols-2 gap-3 text-left">
-            <div className="rounded-2xl border border-border/70 bg-surface/60 p-3.5 shadow-xs backdrop-blur-xl">
-              <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                <Zap size={14} className="text-primary" />
-                <span>Instant Sync</span>
-              </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                Sub-millisecond WebSocket delivery.
-              </p>
+          <div className="mt-10 space-y-3 border-t pt-5 font-mono text-xs text-muted-foreground">
+            <div className="flex items-center justify-between gap-3">
+              <span>command launcher</span>
+              <kbd>Ctrl / ⌘ K</kbd>
             </div>
-            <div className="rounded-2xl border border-border/70 bg-surface/60 p-3.5 shadow-xs backdrop-blur-xl">
-              <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                <ShieldCheck size={14} className="text-primary" />
-                <span>Zero Ads</span>
-              </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                No algorithms or telemetry clutter.
-              </p>
+            <div className="flex items-center justify-between gap-3">
+              <span>focus conversation</span>
+              <kbd>Alt Shift 1</kbd>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span>focus composer</span>
+              <kbd>Alt Shift 2</kbd>
             </div>
           </div>
-
-          <span className="mt-12 text-xs text-muted-foreground">
-            Slow down. Stay close.
-          </span>
+          <p className="mt-8 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+            <Columns2 size={13} />
+            Tiled by default. Yours to arrange.
+          </p>
         </div>
       </section>
     );
@@ -190,11 +161,11 @@ function Conversation({ id }) {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-background/30"
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-surface"
       aria-label={`Conversation with ${user?.fullName || "contact"}`}
     >
       {/* Active Conversation Header */}
-      <header className="safe-top z-10 flex min-h-[76px] shrink-0 items-center gap-3 border-b border-border/80 bg-surface/75 px-4 py-3.5 backdrop-blur-xl sm:px-6 lg:px-8">
+      <header className="safe-top z-10 flex min-h-[64px] shrink-0 items-center gap-3 border-b border-border/80 bg-surface/75 px-4 py-3.5  sm:px-6 lg:px-8">
         <IconButton
           label="Back to conversations"
           className="md:hidden"
@@ -217,10 +188,8 @@ function Conversation({ id }) {
           <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <span
               className={cn(
-                "size-1.5 rounded-full",
-                online
-                  ? "bg-status shadow-[0_0_6px_rgba(34,197,94,0.6)]"
-                  : "bg-muted-foreground/60",
+                "size-1.5 rounded-md",
+                online ? "bg-status " : "bg-muted-foreground/60",
               )}
             />
             {online ? "Online now" : "Offline"}
@@ -255,7 +224,7 @@ function Conversation({ id }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-2 border-b border-border/80 bg-surface/70 px-4 py-2 backdrop-blur-xl sm:px-7"
+            className="flex items-center gap-2 border-b border-border/80 bg-surface/70 px-4 py-2  sm:px-7"
           >
             <Search size={16} className="text-muted-foreground" />
             <Input
@@ -285,7 +254,7 @@ function Conversation({ id }) {
       {/* Connection & Network Status Banner */}
       {(!networkOnline || connection !== "connected") && (
         <div
-          className="flex shrink-0 items-center justify-center gap-2 border-b border-accent/40 bg-accent/60 px-4 py-2 text-xs font-medium text-accent-foreground backdrop-blur-md"
+          className="flex shrink-0 items-center justify-center gap-2 border-b border-accent/40 bg-accent/60 px-4 py-2 text-xs font-medium text-accent-foreground "
           role="status"
         >
           {!networkOnline ? (
@@ -334,7 +303,7 @@ function Conversation({ id }) {
         {/* Load Earlier Messages Button */}
         {hasMore && (
           <button
-            className="mx-auto mb-6 block rounded-full border border-border/80 bg-surface/80 px-4 py-2 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-muted disabled:opacity-50"
+            className="mx-auto mb-6 block rounded-md border border-border/80 bg-surface/80 px-4 py-2 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-muted disabled:opacity-50"
             onClick={loadOlder}
             disabled={loading}
           >
@@ -389,7 +358,7 @@ function Conversation({ id }) {
                   {/* Day Divider Pill */}
                   {showDay && (
                     <div className="flex items-center gap-4 py-6 text-center text-[11px] font-medium text-muted-foreground before:h-px before:flex-1 before:bg-border/60 after:h-px after:flex-1 after:bg-border/60">
-                      <span className="rounded-full border border-border/80 bg-surface/75 px-3 py-1 shadow-xs backdrop-blur-md">
+                      <span className="rounded-md border border-border/80 bg-surface/75 px-3 py-1 shadow-xs ">
                         {dayLabel(message)}
                       </span>
                     </div>
@@ -410,10 +379,10 @@ function Conversation({ id }) {
                       className={cn(
                         "relative max-w-[85%] overflow-hidden rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed shadow-xs transition-shadow sm:max-w-[72%] sm:text-sm",
                         mine
-                          ? "rounded-br-xs bg-primary text-primary-foreground shadow-[0_2px_12px_-3px_rgba(36,82,57,0.3)] dark:shadow-[0_2px_12px_-3px_rgba(52,211,153,0.25)]"
-                          : "rounded-bl-xs border border-border/80 bg-surface/90 text-foreground backdrop-blur-md",
+                          ? "rounded-br-xs bg-accent text-foreground  "
+                          : "rounded-bl-xs border border-border/80 bg-surface/90 text-foreground ",
                         message.file &&
-                          "border border-border/80 bg-surface/90 p-2 text-foreground backdrop-blur-xl",
+                          "border border-border/80 bg-surface/90 p-2 text-foreground ",
                         message.status === "failed" &&
                           "border-destructive/40 bg-destructive/5 text-foreground",
                       )}
@@ -427,7 +396,7 @@ function Conversation({ id }) {
                           className="block overflow-hidden rounded-xl text-inherit"
                         >
                           <img
-                            className="max-h-84 min-h-16 max-w-full rounded-xl object-contain transition-transform duration-200 hover:scale-[1.01]"
+                            className="max-h-84 min-h-16 max-w-full rounded-xl object-contain transition-transform duration-200 "
                             src={message.image}
                             alt={`Photo shared by ${mine ? "you" : user?.fullName}`}
                             loading="lazy"
@@ -535,7 +504,7 @@ function Conversation({ id }) {
       {/* Floating Scroll-to-Bottom Action */}
       {newBelow && (
         <button
-          className="absolute bottom-24 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-border/80 bg-surface/90 px-4 py-2 text-xs font-semibold text-foreground shadow-lg backdrop-blur-xl transition-transform hover:scale-105"
+          className="absolute bottom-24 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-md border border-border/80 bg-surface/90 px-4 py-2 text-xs font-semibold text-foreground shadow-sm  transition-transform "
           onClick={scrollBottom}
         >
           Latest messages <ArrowDown size={14} />
@@ -590,7 +559,7 @@ function Conversation({ id }) {
                       src={message.image}
                       alt="Shared photo"
                       loading="lazy"
-                      className="aspect-square w-full object-cover transition-transform hover:scale-105"
+                      className="aspect-square w-full object-cover transition-transform "
                     />
                   </a>
                 ))}
@@ -689,7 +658,7 @@ function Composer({ id, onSend }) {
   }
 
   return (
-    <div className="safe-bottom z-10 shrink-0 border-t border-border/80 bg-surface/65 px-4 pt-3 backdrop-blur-xl sm:px-6 sm:pt-4 lg:px-8">
+    <div className="safe-bottom z-10 shrink-0 border-t border-border/80 bg-surface/65 px-4 pt-3  sm:px-6 sm:pt-4 lg:px-8">
       {attachment && (
         <AttachmentUpload
           initialFile={attachment.file}
@@ -708,13 +677,13 @@ function Composer({ id, onSend }) {
       )}
 
       <form
-        className="flex items-end gap-2 rounded-3xl border border-border/80 bg-surface/85 p-2 shadow-lg backdrop-blur-2xl transition-all focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/10"
+        className="flex items-end gap-2 rounded-3xl border border-border/80 bg-surface/85 p-2 shadow-sm  transition-colors focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/10"
         onSubmit={send}
       >
         <IconButton
           label="Attach a photo or video"
           onClick={() => setAttachment({})}
-          className="size-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="size-9 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <Paperclip size={18} />
         </IconButton>
@@ -724,7 +693,7 @@ function Composer({ id, onSend }) {
             <IconButton
               label="Choose an emoji"
               className={cn(
-                "size-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground",
+                "size-9 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground",
                 emojis && "bg-accent text-accent-foreground",
               )}
             >
@@ -737,7 +706,7 @@ function Composer({ id, onSend }) {
               align="end"
               sideOffset={12}
               aria-label="Emoji picker"
-              className="z-[80] w-72 rounded-2xl border border-border/80 bg-surface/95 p-3 shadow-xl backdrop-blur-2xl animate-popover"
+              className="z-[80] w-72 rounded-2xl border border-border/80 bg-surface/95 p-3 shadow-sm  animate-popover"
               onCloseAutoFocus={(event) => {
                 event.preventDefault();
                 inputRef.current?.focus();
@@ -778,7 +747,7 @@ function Composer({ id, onSend }) {
                       setEmojis(false);
                       input?.focus();
                     }}
-                    className="flex size-9 items-center justify-center rounded-xl transition-transform hover:scale-115 hover:bg-muted active:scale-95 focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex size-9 items-center justify-center rounded-xl transition-transform  hover:bg-muted  focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {symbol}
                   </button>
@@ -789,7 +758,7 @@ function Composer({ id, onSend }) {
         </Popover.Root>
 
         <Textarea
-          className="max-h-[140px] min-h-10 py-2.5 text-sm sm:text-sm"
+          className="max-h-[140px] min-h-10 py-2.5 text-base md:text-sm"
           id="message-input"
           ref={inputRef}
           rows={1}
@@ -800,11 +769,19 @@ function Composer({ id, onSend }) {
           onChange={(event) =>
             useChat.getState().setDraft(id, event.target.value)
           }
+          onPaste={(event) => {
+            const file = event.clipboardData.files[0];
+            if (file) {
+              event.preventDefault();
+              setAttachment({ file });
+            }
+          }}
           onKeyDown={(event) => {
             if (
               event.key === "Enter" &&
               !event.shiftKey &&
-              !event.nativeEvent.isComposing
+              !event.nativeEvent.isComposing &&
+              !window.matchMedia("(pointer: coarse)").matches
             ) {
               event.preventDefault();
               send();
@@ -817,7 +794,7 @@ function Composer({ id, onSend }) {
           size="icon"
           aria-label="Send message"
           disabled={!text.trim() || !online}
-          className="size-9 rounded-full bg-primary text-primary-foreground shadow-sm transition-transform active:scale-95 disabled:opacity-40"
+          className="size-9 rounded-md bg-accent text-foreground shadow-sm transition-transform  disabled:opacity-40"
         >
           <ArrowUp size={16} strokeWidth={2.4} />
         </Button>

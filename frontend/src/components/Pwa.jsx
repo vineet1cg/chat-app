@@ -27,7 +27,7 @@ export function PwaUpdates() {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed bottom-5 left-1/2 z-[80] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-3 rounded-full border bg-surface/90 py-2 pl-5 pr-2 text-xs shadow-lg backdrop-blur-xl"
+      className="fixed bottom-5 left-1/2 z-[80] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-3 rounded-md border bg-surface/90 py-2 pl-5 pr-2 text-xs shadow-sm "
       role="status"
     >
       <span>A new Chime is ready.</span>
@@ -63,11 +63,11 @@ export function InstallButton({ compact = false }) {
       <button
         onClick={install}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border border-border/80 bg-surface/60 px-3.5 py-3 text-left backdrop-blur-lg transition-colors hover:bg-muted",
-          compact && "w-auto rounded-full px-4 py-2.5",
+          "flex w-full items-center gap-3 rounded-2xl border border-border/80 bg-surface/60 px-3.5 py-3 text-left  transition-colors hover:bg-muted",
+          compact && "w-auto rounded-md px-4 py-2.5",
         )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
           <ArrowDownToLine size={16} />
         </span>
         <span className="flex-1">

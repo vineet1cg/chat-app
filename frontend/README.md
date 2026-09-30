@@ -1,6 +1,6 @@
 # Chime
 
-A responsive chat PWA built with React, Zustand, Tailwind CSS, Axios, Socket.IO, Lucide, and Clerk. The interface uses Tailwind design tokens, Radix interactive primitives, Framer Motion, pill controls, and restrained frosted surfaces. Light, dark, and system themes share the same component styling. Motion respects the reduced-motion preference.
+A responsive chat PWA built with React, Zustand, Tailwind CSS, Axios, Socket.IO, Lucide, and Clerk. The interface uses Tailwind design tokens, Radix interactive primitives, Framer Motion, and an Arch/Hyprland-inspired tiled workspace. Light, dark, and system themes share the same component styling. Motion respects the reduced-motion preference.
 
 ## Local development
 
@@ -43,7 +43,7 @@ New accounts are synced from Clerk on the first authenticated request if the web
 
 ## Offline and installation
 
-`vite-plugin-pwa` emits a versioned app-shell cache, `manifest.json`, PNG icons, and a service worker. An update prompt lets users choose when to reload. Only bundled public assets are cached; authenticated API responses, Clerk sessions, and private media are excluded. Already-loaded messages and drafts stay available in memory while offline; sending is disabled. A fresh offline launch displays the cached shell and a reconnect state. Signing in and loading history require a connection. Theme preference is the only app state persisted to local storage.
+`vite-plugin-pwa` emits a versioned app-shell cache, `manifest.json`, PNG icons, and a service worker. An update prompt lets users choose when to reload. Only bundled public assets are cached; authenticated API responses, Clerk sessions, and private media are excluded. Already-loaded messages and drafts stay available in memory while offline; sending is disabled. A fresh offline launch displays the cached shell and a reconnect state. Signing in and loading history require a connection. Only theme and non-sensitive tile layout preferences are persisted to local storage.
 
 - Android Chrome: use **Get Chime for your device** or the browser's **Install app** menu.
 - iOS Safari: **Share → Add to Home Screen**.
@@ -76,3 +76,7 @@ Implementation references: [Clerk authenticated requests](https://clerk.com/docs
 The server returns structured upload errors (`code`, `message`, `retryable`) for unsupported formats, the 25 MB limit, provider rejection, credentials, capacity, timeouts, and outages. Raw provider diagnostics and secrets are never returned to the browser. ImageKit requests have a 60-second timeout with automatic retries disabled; the frontend allows 90 seconds. `IMAGEKIT_KEY` remains compatible with the existing Render configuration. Use a private server key, with file upload access, from the correct ImageKit account. A successful local credential check does not establish the deployed configuration, and a failed local check does not establish a deployed failure.
 
 To diagnose a live issue, retry a small JPG/PNG after deployment and inspect the `/api/messages/send/:id` response code and the matching `Media provider failed` server log status. A 401/403 indicates provider authentication or access restrictions; 402/429 indicates capacity/rate restrictions. The new component displays the corresponding recovery advice. Provider integration tests exercise the actual ImageKit SDK with a mocked upstream fetch; browser tests exercise multipart transfer against a local HTTP fixture as well as error/retry flows. They do not verify your live ImageKit account.
+
+## Hyprland workspace design
+
+The interface now uses a tiled workspace with a resizable master pane, focus layout, command launcher, and an Arch/Hyprland-inspired dark palette. Light and system appearances remain available. See [the design system and implementation guide](docs/HYPRLAND_DESIGN_SYSTEM.md) for tokens, component hierarchy, spacing, keyboard bindings, responsive rules, accessibility, and performance targets. Only theme and non-sensitive tile layout preferences persist across sessions.

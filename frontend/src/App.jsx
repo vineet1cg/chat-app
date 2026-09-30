@@ -4,15 +4,7 @@ import { useAuth } from "@clerk/react";
 import AuthScreen from "./components/AuthScreen";
 import Sidebar from "./components/Sidebar";
 import ChatPanel from "./components/ChatPanel";
-import {
-  Avatar,
-  Brand,
-  Button,
-  ErrorNotice,
-  IconButton,
-  Spinner,
-  ThemeMenu,
-} from "./components/ui";
+import { Brand, Button, ErrorNotice, Spinner } from "./components/ui";
 
 const NewConversation = lazy(() =>
   import("./components/Dialogs").then((m) => ({ default: m.NewConversation })),
@@ -24,7 +16,7 @@ import { PwaUpdates } from "./components/Pwa";
 import { serverUrl, setTokenProvider } from "./lib/api";
 import { useChat } from "./stores/chat";
 import { useEffectiveTheme } from "./lib/useEffectiveTheme";
-import { MessageCircle, Settings2, SquarePen } from "lucide-react";
+import { WorkspaceShell } from "./components/Workspace";
 
 export function Appearance({ children }) {
   const theme = useEffectiveTheme();
@@ -32,7 +24,7 @@ export function Appearance({ children }) {
     document.documentElement.dataset.theme = theme;
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", theme === "dark" ? "#0d120f" : "#f7f9f6");
+      ?.setAttribute("content", theme === "dark" ? "#10131c" : "#edf1f7");
   }, [theme]);
   return children;
 }
@@ -151,9 +143,8 @@ export default function App() {
   if (!isLoaded)
     return (
       <main className="relative flex min-h-dvh flex-col items-center justify-center gap-5 p-6 text-center">
-        <div className="pointer-events-none absolute inset-0 hero-glow opacity-60" />
         <Brand />
-        <div className="relative z-10 rounded-2xl border border-border/80 bg-surface/80 p-6 shadow-xl backdrop-blur-xl">
+        <div className="relative z-10 rounded-2xl border border-border/80 bg-surface/80 p-6 shadow-sm ">
           <Spinner label="Making a little room for you…" />
           <p className="mt-2 text-xs text-muted-foreground">
             If this takes a while, check your connection.
@@ -181,9 +172,8 @@ export default function App() {
   if (!profile)
     return (
       <main className="relative flex min-h-dvh flex-col items-center justify-center gap-5 p-6 text-center">
-        <div className="pointer-events-none absolute inset-0 hero-glow opacity-60" />
         <Brand />
-        <div className="relative z-10 w-full max-w-sm rounded-3xl border border-border/80 bg-surface/80 p-6 shadow-xl backdrop-blur-xl">
+        <div className="relative z-10 w-full max-w-sm rounded-lg border border-border/80 bg-surface/80 p-6 shadow-sm ">
           {booting ? (
             <Spinner label="Getting your conversations ready…" />
           ) : (
@@ -197,62 +187,18 @@ export default function App() {
     );
 
   return (
-    <main className="h-dvh bg-background p-0 md:p-3 lg:p-4.5 selection:bg-primary/20">
-      <div className="mx-auto flex h-full max-w-[1600px] overflow-hidden bg-surface/80 md:rounded-[28px] md:border md:border-border/80 md:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.12)] dark:md:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-        {/* Modern Left Dock Navigation Rail */}
-        <nav
-          aria-label="Main navigation"
-          className="hidden w-[72px] shrink-0 flex-col items-center border-r border-border/80 bg-sidebar/90 py-5 backdrop-blur-2xl md:flex"
-        >
-          <Brand small iconOnly />
-
-          <div className="mt-8 flex flex-col gap-2.5">
-            <IconButton
-              label="Messages"
-              aria-current="page"
-              onClick={useChat.getState().clearSelection}
-              className="relative size-11 rounded-2xl bg-accent text-accent-foreground shadow-xs transition-transform active:scale-95"
-            >
-              <MessageCircle size={21} />
-            </IconButton>
-
-            <IconButton
-              label="Compose a message"
-              onClick={() => setDialog("new")}
-              className="size-11 rounded-2xl text-muted-foreground transition-all hover:bg-muted/80 hover:text-foreground active:scale-95"
-            >
-              <SquarePen size={20} />
-            </IconButton>
-          </div>
-
-          <div className="mt-auto flex flex-col items-center gap-3">
-            <ThemeMenu />
-            <IconButton
-              label="Open preferences"
-              onClick={() => setDialog("settings")}
-              className="size-11 rounded-2xl text-muted-foreground transition-all hover:bg-muted/80 hover:text-foreground active:scale-95"
-            >
-              <Settings2 size={20} />
-            </IconButton>
-            <button
-              onClick={() => setDialog("settings")}
-              className="mt-1 transition-transform hover:scale-105 active:scale-95"
-              title="Your profile"
-            >
-              <Avatar user={profile} size="avatar-small" />
-            </button>
-          </div>
-        </nav>
-
-        {/* Sidebar Conversations */}
-        <Sidebar
-          onNew={() => setDialog("new")}
-          onSettings={() => setDialog("settings")}
-        />
-
-        {/* Chat Panel View */}
-        <ChatPanel onNew={() => setDialog("new")} />
-      </div>
+    <>
+      <WorkspaceShell
+        onNew={() => setDialog("new")}
+        onSettings={() => setDialog("settings")}
+        conversations={
+          <Sidebar
+            onNew={() => setDialog("new")}
+            onSettings={() => setDialog("settings")}
+          />
+        }
+        chat={<ChatPanel onNew={() => setDialog("new")} />}
+      />
 
       {/* Dialog Modals */}
       <Suspense fallback={null}>
@@ -263,6 +209,6 @@ export default function App() {
       </Suspense>
 
       <PwaUpdates />
-    </main>
+    </>
   );
 }

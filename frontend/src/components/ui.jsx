@@ -12,7 +12,7 @@ import {
   AlertCircle,
   Check,
   LoaderCircle,
-  MessagesSquare,
+  Terminal,
   Monitor,
   Moon,
   RefreshCw,
@@ -35,11 +35,11 @@ export function Button({
     <Tag
       type={asChild ? undefined : "button"}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 [&_svg]:shrink-0",
+        "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-150  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 [&_svg]:shrink-0",
         {
-          "border border-primary/20 bg-primary text-primary-foreground shadow-[0_2px_12px_-3px_rgba(36,82,57,0.35)] dark:shadow-[0_2px_16px_-3px_rgba(52,211,153,0.3)] hover:brightness-105":
+          "border border-primary/20 bg-primary text-primary-foreground   hover:brightness-105":
             variant === "primary",
-          "border border-border/80 bg-surface/75 text-foreground backdrop-blur-xl shadow-xs hover:bg-muted/80 hover:border-border":
+          "border border-control bg-surface/75 text-foreground  shadow-xs hover:bg-muted/80 hover:border-border":
             variant === "outline",
           "text-muted-foreground hover:bg-muted/70 hover:text-foreground":
             variant === "ghost",
@@ -48,7 +48,7 @@ export function Button({
           "border border-destructive/20 text-destructive bg-destructive/5 hover:bg-destructive/10":
             variant === "danger",
           "h-11 px-5": size === "default",
-          "h-9 rounded-full px-3 text-xs": size === "small",
+          "h-9 rounded-md px-3 text-xs": size === "small",
           "size-10 p-0": size === "icon",
         },
         className,
@@ -89,7 +89,7 @@ export function Input({ className, ...props }) {
   return (
     <input
       className={cn(
-        "h-11 w-full min-w-0 rounded-full border border-border bg-surface/75 px-3.5 backdrop-blur-xl text-base outline-none transition-all placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 disabled:opacity-50 md:text-sm",
+        "h-11 w-full min-w-0 rounded-md border border-control bg-surface/75 px-3.5  text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 disabled:opacity-50 md:text-sm",
         className,
       )}
       {...props}
@@ -100,7 +100,7 @@ export function Textarea({ className, ...props }) {
   return (
     <textarea
       className={cn(
-        "min-h-11 w-full resize-none rounded-xl bg-transparent px-2 py-3 text-base leading-6 outline-none transition-all placeholder:text-muted-foreground focus-visible:outline-none md:text-sm",
+        "min-h-11 min-w-0 w-full resize-none rounded-xl bg-transparent px-2 py-3 text-base leading-6 outline-none transition-colors placeholder:text-muted-foreground focus-visible:outline-none md:text-sm",
         className,
       )}
       {...props}
@@ -127,12 +127,12 @@ export function Avatar({ user, size = "", online = false, className }) {
     >
       <AvatarPrimitive.Root
         className={cn(
-          "flex size-full items-center justify-center overflow-hidden rounded-full text-sm font-medium ring-1 ring-black/5 dark:ring-white/10",
+          "flex size-full items-center justify-center overflow-hidden rounded-md text-sm font-medium ring-1 ring-black/5 dark:ring-white/10",
           [
-            "bg-[#e2e9df] text-[#36593f]",
-            "bg-[#e4e6ed] text-[#424d67]",
-            "bg-[#eddfd5] text-[#634735]",
-            "bg-[#e9e2d0] text-[#5a502f]",
+            "bg-primary/15 text-primary",
+            "bg-secondary/15 text-secondary",
+            "bg-warning/15 text-warning",
+            "bg-status/15 text-status",
           ][tone],
           size === "avatar-large" && "text-xl",
         )}
@@ -151,8 +151,7 @@ export function Avatar({ user, size = "", online = false, className }) {
           aria-label="Online"
           className="absolute bottom-0 right-0 flex size-3"
         >
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-status opacity-60" />
-          <span className="relative inline-flex size-3 rounded-full border-2 border-surface bg-status shadow-[0_0_6px_rgba(34,197,94,0.6)]" />
+          <span className="relative inline-flex size-3 rounded-md border-2 border-surface bg-status " />
           <span className="sr-only"> (Online)</span>
         </span>
       )}
@@ -163,17 +162,17 @@ export function Brand({ small = false, iconOnly = false }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2.5 text-[24px] font-semibold tracking-[-0.03em] select-none",
+        "inline-flex items-center gap-2.5 font-mono text-[20px] font-semibold tracking-[-0.03em] select-none",
         small && "text-lg tracking-tight",
       )}
     >
       <span
         className={cn(
-          "flex size-10 items-center justify-center rounded-[14px] bg-gradient-to-br from-primary to-primary/85 text-primary-foreground shadow-[0_4px_16px_-4px_rgba(36,82,57,0.4)] dark:shadow-[0_4px_16px_-4px_rgba(52,211,153,0.3)] transition-transform hover:scale-105",
+          "flex size-10 items-center justify-center rounded-lg bg-accent text-primary   transition-transform ",
           small && "size-8 rounded-xl shadow-xs",
         )}
       >
-        <MessagesSquare size={small ? 17 : 21} strokeWidth={2} />
+        <Terminal size={small ? 17 : 21} strokeWidth={2} />
       </span>
       {!iconOnly && (
         <span className="font-semibold text-foreground">
@@ -217,7 +216,14 @@ export function ErrorNotice({ message, onRetry }) {
     </div>
   );
 }
-export function Modal({ title, description, children, onClose, className }) {
+export function Modal({
+  title,
+  description,
+  children,
+  onClose,
+  className,
+  onCloseAutoFocus,
+}) {
   const [open, setOpen] = useState(true);
   const previousFocus = useRef(document.activeElement);
   return (
@@ -230,15 +236,18 @@ export function Modal({ title, description, children, onClose, className }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"
+                className="fixed inset-0 z-50 bg-black/55 "
               />
             </Dialog.Overlay>
             <Dialog.Content
               forceMount
               asChild
               onCloseAutoFocus={(event) => {
-                event.preventDefault();
-                previousFocus.current?.focus();
+                onCloseAutoFocus?.(event);
+                if (!event.defaultPrevented) {
+                  event.preventDefault();
+                  previousFocus.current?.focus();
+                }
               }}
             >
               <motion.div
@@ -246,13 +255,13 @@ export function Modal({ title, description, children, onClose, className }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.98 }}
                 className={cn(
-                  "fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-3xl border border-border bg-surface/90 p-6 backdrop-blur-2xl text-foreground shadow-xl outline-none sm:p-7",
+                  "fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border border-primary/40 surface-blur p-6  text-foreground shadow-sm outline-none sm:p-7",
                   className,
                 )}
               >
                 <div className="mb-5 flex items-start justify-between gap-4">
                   <div>
-                    <Dialog.Title className="text-lg font-semibold tracking-tight">
+                    <Dialog.Title className="font-mono text-base font-medium tracking-tight">
                       {title}
                     </Dialog.Title>
                     <Dialog.Description
@@ -301,7 +310,7 @@ export function SegmentedControl({
       }}
       aria-label={label}
       className={cn(
-        "flex gap-1 rounded-full border border-border/70 bg-muted/60 p-1 backdrop-blur-xl",
+        "flex gap-1 rounded-md border border-border/70 bg-muted/60 p-1 ",
         className,
       )}
     >
@@ -309,7 +318,7 @@ export function SegmentedControl({
         <ToggleGroup.Item
           key={key}
           value={key}
-          className="relative flex min-h-10 sm:min-h-9 flex-1 items-center justify-center gap-2 rounded-full px-3 text-xs font-medium text-foreground/75 outline-none transition-[transform,background-color,color] duration-150 active:scale-[0.99] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=on]:bg-surface data-[state=on]:text-foreground data-[state=on]:shadow-xs"
+          className="relative flex min-h-10 sm:min-h-9 flex-1 items-center justify-center gap-2 rounded-md px-3 text-xs font-medium text-foreground/75 outline-none transition-[transform,background-color,color] duration-150  hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=on]:bg-surface data-[state=on]:text-foreground data-[state=on]:shadow-xs"
         >
           {Icon && <Icon size={16} />}
           {text}
@@ -342,7 +351,7 @@ export function ThemeMenu() {
         <DropdownMenu.Content
           sideOffset={8}
           align="end"
-          className="z-[70] min-w-44 rounded-xl border border-border bg-surface/90 p-1.5 shadow-lg backdrop-blur-2xl animate-popover"
+          className="z-[70] min-w-44 rounded-xl border border-border bg-surface/90 p-1.5 shadow-sm  animate-popover"
         >
           <DropdownMenu.Label className="px-2.5 py-2 text-[11px] font-medium text-muted-foreground">
             Appearance

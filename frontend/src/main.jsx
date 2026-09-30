@@ -6,6 +6,14 @@ import { Appearance } from "./App";
 import Chime from "./Chime";
 import { ErrorBoundary } from "./components/ui";
 import "./index.css";
+import { usePreferences } from "./stores/preferences";
+const preferredTheme = usePreferences.getState().theme;
+document.documentElement.dataset.theme =
+  preferredTheme === "system"
+    ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+    : preferredTheme;
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

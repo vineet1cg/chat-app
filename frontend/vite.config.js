@@ -53,14 +53,15 @@ export default defineConfig({
       includeAssets: ["favicon.svg", "icons/apple-touch-icon.png"],
       manifest: {
         id: "/",
-        name: "Chime — A little more connected",
+        name: "Chime — Conversations, tiled.",
         short_name: "Chime",
-        description: "A quiet space for your everyday conversations.",
+        description:
+          "A keyboard-first workspace for your everyday conversations.",
         start_url: "/",
         scope: "/",
         display: "standalone",
-        background_color: "#f5f6f3",
-        theme_color: "#f5f6f3",
+        background_color: "#10131c",
+        theme_color: "#10131c",
         lang: "en",
         categories: ["social", "communication"],
         icons: [

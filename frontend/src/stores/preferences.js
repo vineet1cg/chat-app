@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 export const usePreferences = create(
   persist(
     (set) => ({
-      theme: "system",
+      theme: "dark",
       setTheme: (theme) => set({ theme }),
     }),
     { name: "chat-appearance", partialize: ({ theme }) => ({ theme }) },

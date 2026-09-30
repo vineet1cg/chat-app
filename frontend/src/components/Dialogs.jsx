@@ -92,7 +92,7 @@ export function NewConversation({ onClose }) {
                   selectConversation(user);
                   onClose();
                 }}
-                className="group flex w-full items-center gap-3.5 rounded-2xl p-2.5 text-left transition-all duration-150 active:scale-[0.99] hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group flex w-full items-center gap-3.5 rounded-2xl p-2.5 text-left transition-colors duration-150  hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Avatar user={user} online={isOnline} />
                 <span className="min-w-0 flex-1">
@@ -103,7 +103,7 @@ export function NewConversation({ onClose }) {
                     {isOnline ? "Online now" : "Start a conversation"}
                   </span>
                 </span>
-                <span className="flex size-8 items-center justify-center rounded-full bg-surface text-muted-foreground shadow-xs transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <span className="flex size-8 items-center justify-center rounded-md bg-surface text-muted-foreground shadow-xs transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                   <ArrowUpRight size={15} />
                 </span>
               </button>
@@ -154,7 +154,7 @@ export function Settings({ onClose }) {
       onClose={onClose}
     >
       {/* Profile Card */}
-      <div className="my-5 flex items-center gap-4 rounded-2xl border border-border/80 bg-surface/75 p-4 shadow-xs backdrop-blur-xl">
+      <div className="my-5 flex items-center gap-4 rounded-2xl border border-border/80 bg-surface/75 p-4 shadow-xs ">
         <Avatar user={profile} size="avatar-large" />
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-base font-bold text-foreground">

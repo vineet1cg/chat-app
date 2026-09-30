@@ -502,3 +502,156 @@ test("attachment validation, offline selection and keyboard dismissal", async ({
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(attach).toBeFocused();
 });
+
+test("workspace launcher preserves drafts, runs commands and respects typing", async ({
+  page,
+}, info) => {
+  await mockApi(page);
+  await openChat(page);
+  const message = page.getByRole("textbox", { name: "Message", exact: true });
+  await message.fill("A draft worth keeping");
+  await page.keyboard.press("Alt+Shift+n");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.keyboard.press("Control+k");
+  const launcher = page.getByRole("dialog", { name: "Command launcher" });
+  await expect(launcher).toBeVisible();
+  const commands = page.getByRole("combobox", { name: "Search commands" });
+  await commands.fill("focus message");
+  await page.keyboard.press("Enter");
+  await expect(launcher).toHaveCount(0);
+  await expect(message).toBeFocused();
+  await expect(message).toHaveValue("A draft worth keeping");
+  await page.keyboard.press("Control+k");
+  await commands.fill("no such command");
+  await expect(page.getByText("No commands found.")).toBeVisible();
+  await commands.fill("");
+  await expect(commands).toHaveAttribute(
+    "aria-activedescendant",
+    "command-new",
+  );
+  await page.keyboard.press("ArrowDown");
+  await expect(commands).toHaveAttribute(
+    "aria-activedescendant",
+    "command-conversations",
+  );
+  await page.screenshot({
+    path: `test-results/${info.project.name}-command-launcher.png`,
+    fullPage: true,
+  });
+  await page.keyboard.press("Escape");
+  await expect(message).toBeFocused();
+  await page.keyboard.press("Control+k");
+  await commands.fill("appearance");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("dialog", { name: "Your space" })).toBeVisible();
+  await page.getByRole("radio", { name: "Light", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.screenshot({
+    path: `test-results/${info.project.name}-light-workspace.png`,
+    fullPage: true,
+  });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("tile sizing, focus layout, persistence and narrow-window adaptation", async ({
+  page,
+}, info) => {
+  test.skip(
+    ["android-layout", "ios-layout"].includes(info.project.name),
+    "Resize handles apply to split desktop windows.",
+  );
+  await mockApi(page);
+  await openChat(page);
+  const divider = page.getByRole("separator", {
+    name: "Resize conversation tile",
+  });
+  await divider.focus();
+  await page.keyboard.press("Home");
+  await expect(divider).toHaveAttribute("aria-valuenow", "240");
+  await page.keyboard.press("ArrowRight");
+  await expect(divider).toHaveAttribute("aria-valuenow", "256");
+  const rect = await divider.boundingBox();
+  await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(rect.x + 54, rect.y + rect.height / 2, { steps: 4 });
+  await page.mouse.up();
+  const width = await divider.getAttribute("aria-valuenow");
+  expect(Number(width)).toBeGreaterThan(290);
+  await page.reload();
+  await expect(divider).toHaveAttribute("aria-valuenow", width);
+  await page.getByRole("button", { name: /Jamie Chen/ }).click();
+  await page
+    .getByRole("button", { name: "Focus chat tile", exact: true })
+    .click();
+  await expect(
+    page.getByRole("complementary", { name: "Conversations" }),
+  ).toBeHidden();
+  await expect(divider).toBeHidden();
+  await page.keyboard.press("Alt+Shift+Digit1");
+  await expect(
+    page.getByRole("textbox", { name: "Search conversations" }),
+  ).toBeFocused();
+  await expect(divider).toBeVisible();
+  await page.setViewportSize({ width: 600, height: 700 });
+  await expect(
+    page.getByRole("complementary", { name: "Conversations" }),
+  ).toBeHidden();
+  await expect(
+    page.getByRole("textbox", { name: "Message", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Messages workspace" }).click();
+  await expect(
+    page.getByRole("textbox", { name: "Search conversations" }),
+  ).toBeFocused();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("conversation arrow navigation moves focus without opening a chat", async ({
+  page,
+}) => {
+  await mockApi(page);
+  await page.route("**/api/messages/conversations", (route) =>
+    route.fulfill({
+      json: [{ ...friend, lastMessage: history.at(-1) }, friend2],
+    }),
+  );
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open command launcher" }).click();
+  await expect(
+    page.getByRole("option", { name: /^Focus message/ }),
+  ).toHaveAttribute("aria-disabled", "true");
+  await page.keyboard.press("Escape");
+  const first = page.getByRole("button", { name: /Jamie Chen/ });
+  const second = page.getByRole("button", { name: /Sofia Davis/ });
+  await first.focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(second).toBeFocused();
+  await expect(page.getByRole("log")).toHaveCount(0);
+  await page.keyboard.press("Home");
+  await expect(first).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("log")).toBeVisible();
+  await expect(page.locator("#chat-tile")).toBeFocused();
+  await page.setViewportSize({ width: 320, height: 640 });
+  await expect(
+    page.getByRole("textbox", { name: "Message", exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.keyboard.press("/");
+  await expect(
+    page.getByRole("textbox", { name: "Search conversations" }),
+  ).toBeFocused();
+});

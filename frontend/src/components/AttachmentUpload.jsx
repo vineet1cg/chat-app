@@ -226,7 +226,7 @@ export default function AttachmentUpload({
               onClick={() => fileInput.current.click()}
               className="flex w-full flex-col items-center rounded-3xl border border-dashed border-primary/35 bg-accent/20 px-5 py-8 text-center transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="mb-4 flex size-14 items-center justify-center rounded-2xl border bg-surface/75 text-primary shadow-xs backdrop-blur-xl">
+              <span className="mb-4 flex size-14 items-center justify-center rounded-2xl border bg-surface/75 text-primary shadow-xs ">
                 <ImagePlus size={26} strokeWidth={1.5} />
               </span>
               <span className="text-sm font-semibold">
@@ -235,7 +235,7 @@ export default function AttachmentUpload({
               <span className="mt-1.5 text-xs text-muted-foreground">
                 Or drop a file here
               </span>
-              <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground">
+              <span className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground">
                 <Upload size={14} />
                 Browse files
               </span>
@@ -378,11 +378,11 @@ export function PendingAttachment({ message, online, onRetry }) {
             aria-valuenow={
               transferred ? undefined : (message.uploadProgress ?? 0)
             }
-            className="h-1.5 overflow-hidden rounded-full bg-muted"
+            className="h-1.5 overflow-hidden rounded-md bg-muted"
           >
             <div
               className={cn(
-                "h-full rounded-full bg-primary transition-[width] motion-reduce:transition-none",
+                "h-full rounded-md bg-primary transition-[width] motion-reduce:transition-none",
                 transferred && "animate-pulse motion-reduce:animate-none",
               )}
               style={{ width: `${message.uploadProgress ?? 0}%` }}
