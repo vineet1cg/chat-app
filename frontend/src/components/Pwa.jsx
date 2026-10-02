@@ -27,7 +27,7 @@ export function PwaUpdates() {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed bottom-5 left-1/2 z-[80] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-3 rounded-md border bg-surface/90 py-2 pl-5 pr-2 text-xs shadow-sm "
+      className="fixed bottom-5 left-1/2 z-[80] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-3 rounded-2xl border border-border surface-glass py-2.5 pl-5 pr-2 text-xs shadow-xl"
       role="status"
     >
       <span>A new Chime is ready.</span>
@@ -40,6 +40,7 @@ export function PwaUpdates() {
     </motion.div>
   );
 }
+
 export function InstallButton({ compact = false }) {
   const { prompt, installed } = usePwa();
   const [instructions, setInstructions] = useState(false);
@@ -63,15 +64,15 @@ export function InstallButton({ compact = false }) {
       <button
         onClick={install}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border border-border/80 bg-surface/60 px-3.5 py-3 text-left  transition-colors hover:bg-muted",
-          compact && "w-auto rounded-md px-4 py-2.5",
+          "flex w-full items-center gap-3 rounded-2xl border border-border/60 bg-surface/60 px-3.5 py-3 text-left transition-colors hover:bg-muted",
+          compact && "w-auto rounded-xl px-4 py-2.5",
         )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <ArrowDownToLine size={16} />
         </span>
         <span className="flex-1">
-          <strong className="block text-xs font-medium">
+          <strong className="block text-xs font-semibold">
             Get Chime for your device
           </strong>
           {!compact && (
@@ -105,7 +106,7 @@ export function InstallButton({ compact = false }) {
                 "Android",
                 Smartphone,
                 <>
-                  In Chrome’s menu, choose <strong>Install app</strong> or{" "}
+                  In Chrome's menu, choose <strong>Install app</strong> or{" "}
                   <strong>Add to Home screen</strong>.
                 </>,
               ],
@@ -113,17 +114,17 @@ export function InstallButton({ compact = false }) {
                 "Desktop",
                 Monitor,
                 <>
-                  Choose the install icon in Chrome or Edge’s address bar, or
+                  Choose the install icon in Chrome or Edge's address bar, or
                   look in the browser menu.
                 </>,
               ],
             ].map(([title, Icon, copy]) => (
               <section key={title} className="flex gap-3.5">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border bg-background">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-surface">
                   <Icon size={19} className="text-muted-foreground" />
                 </span>
                 <div>
-                  <h3 className="text-sm font-medium">{title}</h3>
+                  <h3 className="text-sm font-semibold">{title}</h3>
                   <p className="mt-1.5 text-xs leading-6 text-muted-foreground">
                     {copy}
                   </p>

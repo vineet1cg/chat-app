@@ -6,13 +6,11 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowUp,
-  Check,
+  CheckCheck,
   ChevronDown,
   Info,
   LoaderCircle,
-  Terminal,
   MessageCircle,
-  Columns2,
   Paperclip,
   Search,
   Smile,
@@ -37,48 +35,85 @@ import AttachmentUpload, { PendingAttachment } from "./AttachmentUpload";
 
 const EMPTY = [];
 
+const EMOJI_CATEGORIES = [
+  {
+    id: "quick",
+    name: "Quick",
+    items: [
+      ["😊", "Smiling face"],
+      ["❤️", "Heart"],
+      ["👍", "Thumbs up"],
+      ["😂", "Laughing face"],
+      ["🎉", "Celebration"],
+      ["👋", "Wave"],
+      ["☀️", "Sun"],
+      ["✨", "Sparkles"],
+      ["☕", "Coffee"],
+      ["🌿", "Plant"],
+    ],
+  },
+  {
+    id: "warmth",
+    name: "Warmth",
+    items: [
+      ["😊", "Smiling face"],
+      ["🥰", "Loving smile"],
+      ["😌", "Calm and peaceful"],
+      ["✨", "Sparkles"],
+      ["💛", "Warm heart"],
+      ["☕", "Coffee"],
+      ["🌿", "Plant"],
+      ["🌸", "Cherry blossom"],
+      ["🫶", "Heart hands"],
+      ["🫂", "Warm hug"],
+    ],
+  },
+  {
+    id: "joy",
+    name: "Joy",
+    items: [
+      ["😂", "Laughing face"],
+      ["🥳", "Celebration"],
+      ["🎉", "Party popper"],
+      ["🎈", "Party balloon"],
+      ["🥂", "Clinking glasses"],
+      ["🎶", "Musical notes"],
+      ["☀️", "Sun"],
+      ["🌈", "Rainbow"],
+      ["🍰", "Sweet treat"],
+      ["🌟", "Glowing star"],
+    ],
+  },
+];
+
 export default function ChatPanel({ onNew }) {
   const activeId = useChat((state) => state.activeId);
 
   if (!activeId) {
     return (
       <section className="relative hidden min-h-0 min-w-0 flex-1 flex-col items-center justify-center bg-surface p-6 md:flex">
-        <div className="w-full max-w-md">
-          <div className="mb-8 flex items-center gap-3 font-mono text-xs text-secondary">
-            <Terminal size={18} />
-            chime@workspace:~
-          </div>
-          <h2 className="text-2xl font-medium tracking-tight">
+        <div className="hero-glow" />
+        <div className="relative z-10 w-full max-w-md text-center">
+          <span className="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-xl shadow-primary/25">
+            <MessageCircle size={36} strokeWidth={1.8} />
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight">
             Your conversations.
             <br />
-            <span className="text-primary">In focus.</span>
+            <span className="gradient-text">Ready when you are.</span>
           </h2>
-          <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
-            Select a conversation in the master tile, or start a new one.
-            Everything you need, one shortcut away.
+          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            Select a conversation from the sidebar, or start a new one. Your
+            messages arrive in real-time.
           </p>
           <Button className="mt-6" onClick={onNew}>
             <SquarePen size={16} />
             New message
           </Button>
-          <div className="mt-10 space-y-3 border-t pt-5 font-mono text-xs text-muted-foreground">
-            <div className="flex items-center justify-between gap-3">
-              <span>command launcher</span>
-              <kbd>Ctrl / ⌘ K</kbd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <span>focus conversation</span>
-              <kbd>Alt Shift 1</kbd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <span>focus composer</span>
-              <kbd>Alt Shift 2</kbd>
-            </div>
+          <div className="mt-10 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <kbd>Ctrl K</kbd>
+            <span>to open the command palette</span>
           </div>
-          <p className="mt-8 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
-            <Columns2 size={13} />
-            Tiled by default. Yours to arrange.
-          </p>
         </div>
       </section>
     );
@@ -164,8 +199,8 @@ function Conversation({ id }) {
       className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-surface"
       aria-label={`Conversation with ${user?.fullName || "contact"}`}
     >
-      {/* Active Conversation Header */}
-      <header className="safe-top z-10 flex min-h-[64px] shrink-0 items-center gap-3 border-b border-border/80 bg-surface/75 px-4 py-3.5  sm:px-6 lg:px-8">
+      {/* Chat Header */}
+      <header className="safe-top z-10 flex min-h-[68px] shrink-0 items-center gap-3 border-b border-border/60 surface-glass px-4 py-3.5 sm:px-6">
         <IconButton
           label="Back to conversations"
           className="md:hidden"
@@ -177,7 +212,7 @@ function Conversation({ id }) {
         <Avatar user={user} size="avatar-small" online={online} />
 
         <button
-          className="min-w-0 -m-1 rounded-xl p-1.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="min-w-0 -m-1 rounded-xl p-1.5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={() => setDetails(true)}
           aria-haspopup="dialog"
           aria-label={`View conversation details for ${user?.fullName || "contact"}`}
@@ -188,31 +223,31 @@ function Conversation({ id }) {
           <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <span
               className={cn(
-                "size-1.5 rounded-md",
-                online ? "bg-status " : "bg-muted-foreground/60",
+                "size-1.5 rounded-full",
+                online ? "bg-status" : "bg-muted-foreground/50",
               )}
             />
             {online ? "Online now" : "Offline"}
-            <ChevronDown size={11} className="text-muted-foreground/80" />
+            <ChevronDown size={11} className="text-muted-foreground/70" />
           </span>
         </button>
 
         <div className="ml-auto flex shrink-0 items-center gap-1">
           <IconButton
             label="Search this conversation"
-            className={searching ? "bg-accent text-accent-foreground" : ""}
+            className={cn(searching && "bg-accent text-accent-foreground")}
             onClick={() => {
               setSearching(!searching);
               setQuery("");
             }}
           >
-            <Search size={19} />
+            <Search size={18} />
           </IconButton>
           <IconButton
             label="Conversation details"
             onClick={() => setDetails(true)}
           >
-            <Info size={19} />
+            <Info size={18} />
           </IconButton>
         </div>
       </header>
@@ -224,7 +259,7 @@ function Conversation({ id }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-2 border-b border-border/80 bg-surface/70 px-4 py-2  sm:px-7"
+            className="flex items-center gap-2 border-b border-border/60 bg-surface/70 px-4 py-2 sm:px-6"
           >
             <Search size={16} className="text-muted-foreground" />
             <Input
@@ -251,10 +286,10 @@ function Conversation({ id }) {
         )}
       </AnimatePresence>
 
-      {/* Connection & Network Status Banner */}
+      {/* Connection Status Banner */}
       {(!networkOnline || connection !== "connected") && (
         <div
-          className="flex shrink-0 items-center justify-center gap-2 border-b border-accent/40 bg-accent/60 px-4 py-2 text-xs font-medium text-accent-foreground "
+          className="flex shrink-0 items-center justify-center gap-2 border-b border-warning/20 bg-warning/5 px-4 py-2 text-xs font-medium text-warning"
           role="status"
         >
           {!networkOnline ? (
@@ -264,7 +299,7 @@ function Conversation({ id }) {
           )}
           <span>
             {!networkOnline
-              ? "You’re offline. Your open messages are still here."
+              ? "You're offline. Your open messages are still here."
               : "Reconnecting to live updates…"}
           </span>
           {networkOnline && (
@@ -278,9 +313,9 @@ function Conversation({ id }) {
         </div>
       )}
 
-      {/* Messages Stream Container */}
+      {/* Messages Stream */}
       <div
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-6 sm:px-7 lg:px-10"
+        className="scrollbar-none min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-6 sm:px-6 lg:px-8"
         ref={scrollRef}
         onScroll={() => {
           const el = scrollRef.current;
@@ -289,10 +324,10 @@ function Conversation({ id }) {
           if (nearBottom.current) setNewBelow(false);
         }}
       >
-        {/* Conversation Start Avatar */}
-        <div className="flex flex-col items-center pb-8 pt-4 text-center">
+        {/* Conversation Start */}
+        <div className="flex flex-col items-center pb-8 pt-2 text-center">
           <Avatar user={user} size="avatar-large" />
-          <h2 className="mt-3 text-base font-bold text-foreground">
+          <h2 className="mt-3 text-lg font-bold text-foreground">
             {user?.fullName}
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
@@ -300,10 +335,10 @@ function Conversation({ id }) {
           </p>
         </div>
 
-        {/* Load Earlier Messages Button */}
+        {/* Load Earlier Messages */}
         {hasMore && (
           <button
-            className="mx-auto mb-6 block rounded-md border border-border/80 bg-surface/80 px-4 py-2 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-muted disabled:opacity-50"
+            className="mx-auto mb-6 block rounded-full border border-border bg-surface/80 px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition-colors hover:bg-muted disabled:opacity-50"
             onClick={loadOlder}
             disabled={loading}
           >
@@ -328,9 +363,9 @@ function Conversation({ id }) {
             <Button
               variant="outline"
               size="small"
-              className="gap-2 text-xs text-primary shadow-xs"
+              className="gap-2 text-xs"
               onClick={() => {
-                useChat.getState().setDraft(id, "Hey! How’s your day going?");
+                useChat.getState().setDraft(id, "Hey! How's your day going?");
                 document.getElementById("message-input")?.focus();
               }}
             >
@@ -339,7 +374,7 @@ function Conversation({ id }) {
           </div>
         ) : (
           <div
-            className="mx-auto max-w-[880px]"
+            className="mx-auto max-w-[820px]"
             role="log"
             aria-label="Messages"
             aria-live="polite"
@@ -355,36 +390,36 @@ function Conversation({ id }) {
 
               return (
                 <Fragment key={message._id}>
-                  {/* Day Divider Pill */}
+                  {/* Day Divider */}
                   {showDay && (
-                    <div className="flex items-center gap-4 py-6 text-center text-[11px] font-medium text-muted-foreground before:h-px before:flex-1 before:bg-border/60 after:h-px after:flex-1 after:bg-border/60">
-                      <span className="rounded-md border border-border/80 bg-surface/75 px-3 py-1 shadow-xs ">
+                    <div className="flex items-center gap-4 py-5 text-center text-[11px] font-medium text-muted-foreground before:h-px before:flex-1 before:bg-border/60 after:h-px after:flex-1 after:bg-border/60">
+                      <span className="rounded-full border border-border/60 bg-surface/80 px-3 py-1 shadow-sm">
                         {dayLabel(message)}
                       </span>
                     </div>
                   )}
 
-                  {/* Message Bubble Item */}
+                  {/* Message Bubble */}
                   <motion.div
-                    initial={{ opacity: 0, y: 4 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.15 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                     className={cn(
                       "flex flex-col",
                       mine ? "items-end" : "items-start",
-                      grouped ? "mt-1.5" : "mt-4",
+                      grouped ? "mt-1" : "mt-3",
                     )}
                   >
                     <div
                       className={cn(
-                        "relative max-w-[85%] overflow-hidden rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed shadow-xs transition-shadow sm:max-w-[72%] sm:text-sm",
+                        "relative max-w-[85%] overflow-hidden px-4 py-2.5 text-sm leading-relaxed shadow-sm transition-shadow sm:max-w-[72%]",
                         mine
-                          ? "rounded-br-xs bg-accent text-foreground  "
-                          : "rounded-bl-xs border border-border/80 bg-surface/90 text-foreground ",
+                          ? "rounded-2xl rounded-br-md bg-primary text-primary-foreground"
+                          : "rounded-2xl rounded-bl-md border border-border/60 bg-muted text-foreground",
                         message.file &&
-                          "border border-border/80 bg-surface/90 p-2 text-foreground ",
+                          "rounded-2xl border border-border/60 bg-muted p-2 text-foreground",
                         message.status === "failed" &&
-                          "border-destructive/40 bg-destructive/5 text-foreground",
+                          "border-destructive/30 bg-destructive/5 text-foreground",
                       )}
                     >
                       {/* Attached Photo */}
@@ -396,7 +431,7 @@ function Conversation({ id }) {
                           className="block overflow-hidden rounded-xl text-inherit"
                         >
                           <img
-                            className="max-h-84 min-h-16 max-w-full rounded-xl object-contain transition-transform duration-200 "
+                            className="max-h-80 min-h-16 max-w-full rounded-xl object-contain transition-transform duration-200 hover:scale-[1.02]"
                             src={message.image}
                             alt={`Photo shared by ${mine ? "you" : user?.fullName}`}
                             loading="lazy"
@@ -420,7 +455,7 @@ function Conversation({ id }) {
                           src={message.video}
                           controls
                           preload="metadata"
-                          className="max-h-84 max-w-full rounded-xl"
+                          className="max-h-80 max-w-full rounded-xl"
                           aria-label="Shared video"
                         />
                       )}
@@ -446,7 +481,7 @@ function Conversation({ id }) {
                       )}
                     </div>
 
-                    {/* Meta info: Timestamp and Sent State */}
+                    {/* Meta: Timestamp & Sent State */}
                     <div className="flex items-center gap-1.5 px-1.5 pt-1 text-[11px] text-muted-foreground">
                       <time dateTime={messageDate(message)?.toISOString()}>
                         {timeLabel(message)}
@@ -472,8 +507,8 @@ function Conversation({ id }) {
                             Not sent · Retry
                           </button>
                         ) : (
-                          <span className="flex items-center gap-0.5 text-muted-foreground">
-                            <Check size={12} strokeWidth={2.5} />
+                          <span className="flex items-center gap-0.5 text-primary">
+                            <CheckCheck size={13} strokeWidth={2.5} />
                             <span>Sent</span>
                           </span>
                         ))}
@@ -494,24 +529,24 @@ function Conversation({ id }) {
 
             {query && !matches.length && (
               <div className="py-12 text-center text-sm text-muted-foreground">
-                No messages match “{query}”.
+                No messages match "{query}".
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Floating Scroll-to-Bottom Action */}
+      {/* Scroll-to-Bottom */}
       {newBelow && (
         <button
-          className="absolute bottom-24 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-md border border-border/80 bg-surface/90 px-4 py-2 text-xs font-semibold text-foreground shadow-sm  transition-transform "
+          className="absolute bottom-24 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-surface/90 px-4 py-2 text-xs font-semibold text-foreground shadow-lg backdrop-blur transition-transform hover:bg-surface"
           onClick={scrollBottom}
         >
           Latest messages <ArrowDown size={14} />
         </button>
       )}
 
-      {/* Message Composer */}
+      {/* Composer */}
       <Composer
         id={id}
         onSend={() => {
@@ -523,8 +558,8 @@ function Conversation({ id }) {
       {details && (
         <Modal title="Conversation details" onClose={() => setDetails(false)}>
           <div className="flex flex-col items-center py-4 text-center">
-            <Avatar user={user} size="avatar-large" />
-            <h3 className="mt-4 text-lg font-semibold text-foreground">
+            <Avatar user={user} size="avatar-large" online={online} />
+            <h3 className="mt-4 text-xl font-bold text-foreground">
               {user?.fullName}
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -532,7 +567,7 @@ function Conversation({ id }) {
             </p>
           </div>
 
-          <div className="mt-6 border-t border-border/80 pt-6">
+          <div className="mt-6 border-t border-border/60 pt-6">
             <h4 className="text-sm font-semibold text-foreground">
               Shared in this conversation
             </h4>
@@ -553,13 +588,13 @@ function Conversation({ id }) {
                     target="_blank"
                     rel="noreferrer"
                     key={message._id}
-                    className="overflow-hidden rounded-xl border border-border/80"
+                    className="overflow-hidden rounded-xl border border-border/60"
                   >
                     <img
                       src={message.image}
                       alt="Shared photo"
                       loading="lazy"
-                      className="aspect-square w-full object-cover transition-transform "
+                      className="aspect-square w-full object-cover transition-transform hover:scale-105"
                     />
                   </a>
                 ))}
@@ -575,57 +610,6 @@ function Conversation({ id }) {
     </motion.section>
   );
 }
-
-const EMOJI_CATEGORIES = [
-  {
-    id: "quick",
-    name: "Quick",
-    items: [
-      ["😊", "Smiling face"],
-      ["❤️", "Heart"],
-      ["👍", "Thumbs up"],
-      ["😂", "Laughing face"],
-      ["🎉", "Celebration"],
-      ["👋", "Wave"],
-      ["☀️", "Sun"],
-      ["✨", "Sparkles"],
-      ["☕", "Coffee"],
-      ["🌿", "Plant"],
-    ],
-  },
-  {
-    id: "warmth",
-    name: "Warmth",
-    items: [
-      ["😊", "Smiling face"],
-      ["🥰", "Loving smile"],
-      ["😌", "Calm and peaceful"],
-      ["✨", "Sparkles"],
-      ["💛", "Warm heart"],
-      ["☕", "Coffee"],
-      ["🌿", "Plant"],
-      ["🌸", "Cherry blossom"],
-      ["🫶", "Heart hands"],
-      ["🫂", "Warm hug"],
-    ],
-  },
-  {
-    id: "joy",
-    name: "Joy",
-    items: [
-      ["😂", "Laughing face"],
-      ["🥳", "Celebration"],
-      ["🎉", "Party popper"],
-      ["🎈", "Party balloon"],
-      ["🥂", "Clinking glasses"],
-      ["🎶", "Musical notes"],
-      ["☀️", "Sun"],
-      ["🌈", "Rainbow"],
-      ["🍰", "Sweet treat"],
-      ["🌟", "Glowing star"],
-    ],
-  },
-];
 
 function Composer({ id, onSend }) {
   const text = useChat((state) => state.drafts[id] || "");
@@ -658,7 +642,7 @@ function Composer({ id, onSend }) {
   }
 
   return (
-    <div className="safe-bottom z-10 shrink-0 border-t border-border/80 bg-surface/65 px-4 pt-3  sm:px-6 sm:pt-4 lg:px-8">
+    <div className="safe-bottom z-10 shrink-0 border-t border-border/60 bg-surface/50 px-3 py-3 sm:px-6">
       {attachment && (
         <AttachmentUpload
           initialFile={attachment.file}
@@ -677,13 +661,13 @@ function Composer({ id, onSend }) {
       )}
 
       <form
-        className="flex items-end gap-2 rounded-3xl border border-border/80 bg-surface/85 p-2 shadow-sm  transition-colors focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/10"
+        className="flex items-end gap-1.5 rounded-2xl border border-border bg-surface/80 p-1.5 shadow-sm transition-colors focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 sm:gap-2 sm:p-2"
         onSubmit={send}
       >
         <IconButton
           label="Attach a photo or video"
           onClick={() => setAttachment({})}
-          className="size-9 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="size-10 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <Paperclip size={18} />
         </IconButton>
@@ -693,7 +677,7 @@ function Composer({ id, onSend }) {
             <IconButton
               label="Choose an emoji"
               className={cn(
-                "size-9 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground",
+                "size-10 text-muted-foreground hover:bg-muted hover:text-foreground",
                 emojis && "bg-accent text-accent-foreground",
               )}
             >
@@ -706,13 +690,13 @@ function Composer({ id, onSend }) {
               align="end"
               sideOffset={12}
               aria-label="Emoji picker"
-              className="z-[80] w-72 rounded-2xl border border-border/80 bg-surface/95 p-3 shadow-sm  animate-popover"
+              className="z-[80] w-72 rounded-2xl border border-border surface-glass p-3 shadow-xl animate-popover"
               onCloseAutoFocus={(event) => {
                 event.preventDefault();
                 inputRef.current?.focus();
               }}
             >
-              <div className="mb-2 flex gap-1 border-b border-border/70 pb-2">
+              <div className="mb-2 flex gap-1 border-b border-border/60 pb-2">
                 {EMOJI_CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
@@ -747,7 +731,7 @@ function Composer({ id, onSend }) {
                       setEmojis(false);
                       input?.focus();
                     }}
-                    className="flex size-9 items-center justify-center rounded-xl transition-transform  hover:bg-muted  focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex size-9 items-center justify-center rounded-xl transition-transform hover:scale-110 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {symbol}
                   </button>
@@ -758,7 +742,7 @@ function Composer({ id, onSend }) {
         </Popover.Root>
 
         <Textarea
-          className="max-h-[140px] min-h-10 py-2.5 text-base md:text-sm"
+          className="max-h-[140px] min-h-10 flex-1 py-2.5 text-base md:text-sm"
           id="message-input"
           ref={inputRef}
           rows={1}
@@ -780,8 +764,7 @@ function Composer({ id, onSend }) {
             if (
               event.key === "Enter" &&
               !event.shiftKey &&
-              !event.nativeEvent.isComposing &&
-              !window.matchMedia("(pointer: coarse)").matches
+              !event.nativeEvent.isComposing
             ) {
               event.preventDefault();
               send();
@@ -794,9 +777,9 @@ function Composer({ id, onSend }) {
           size="icon"
           aria-label="Send message"
           disabled={!text.trim() || !online}
-          className="size-9 rounded-md bg-accent text-foreground shadow-sm transition-transform  disabled:opacity-40"
+          className="size-10 rounded-xl"
         >
-          <ArrowUp size={16} strokeWidth={2.4} />
+          <ArrowUp size={17} strokeWidth={2.5} />
         </Button>
       </form>
     </div>

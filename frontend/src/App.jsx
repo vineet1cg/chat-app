@@ -24,7 +24,7 @@ export function Appearance({ children }) {
     document.documentElement.dataset.theme = theme;
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", theme === "dark" ? "#10131c" : "#edf1f7");
+      ?.setAttribute("content", theme === "dark" ? "#0b0b0e" : "#f5f5f3");
   }, [theme]);
   return children;
 }
@@ -143,8 +143,9 @@ export default function App() {
   if (!isLoaded)
     return (
       <main className="relative flex min-h-dvh flex-col items-center justify-center gap-5 p-6 text-center">
+        <div className="hero-glow" />
         <Brand />
-        <div className="relative z-10 rounded-2xl border border-border/80 bg-surface/80 p-6 shadow-sm ">
+        <div className="relative z-10 w-full max-w-sm rounded-2xl border border-border surface-glass p-6 shadow-xl">
           <Spinner label="Making a little room for you…" />
           <p className="mt-2 text-xs text-muted-foreground">
             If this takes a while, check your connection.
@@ -172,13 +173,14 @@ export default function App() {
   if (!profile)
     return (
       <main className="relative flex min-h-dvh flex-col items-center justify-center gap-5 p-6 text-center">
+        <div className="hero-glow" />
         <Brand />
-        <div className="relative z-10 w-full max-w-sm rounded-lg border border-border/80 bg-surface/80 p-6 shadow-sm ">
+        <div className="relative z-10 w-full max-w-sm rounded-2xl border border-border surface-glass p-6 shadow-xl">
           {booting ? (
             <Spinner label="Getting your conversations ready…" />
           ) : (
             <ErrorNotice
-              message={bootError || "Couldn’t load your account."}
+              message={bootError || "Couldn't load your account."}
               onRetry={initialize}
             />
           )}

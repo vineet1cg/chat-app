@@ -60,13 +60,13 @@ export function NewConversation({ onClose }) {
           aria-label="Search people"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="h-10 bg-surface/70 pl-10 pr-9 text-xs sm:text-xs"
+          className="h-10 bg-surface/70 pl-10 pr-9 text-sm"
         />
         {query && (
           <IconButton
             label="Clear search"
             onClick={() => setQuery("")}
-            className="absolute right-1 top-0 size-10"
+            className="absolute right-0.5 top-0.5 size-9"
           >
             <X size={14} />
           </IconButton>
@@ -78,7 +78,7 @@ export function NewConversation({ onClose }) {
         <span className="tabular-nums">{filtered.length}</span>
       </div>
 
-      <div className="-mx-2 max-h-[48dvh] min-h-40 overflow-y-auto px-1 py-1">
+      <div className="-mx-1 max-h-[48dvh] min-h-40 overflow-y-auto px-1 py-1">
         {usersError && <ErrorNotice message={usersError} onRetry={loadUsers} />}
         {usersLoading ? (
           <Spinner label="Finding people…" />
@@ -92,7 +92,7 @@ export function NewConversation({ onClose }) {
                   selectConversation(user);
                   onClose();
                 }}
-                className="group flex w-full items-center gap-3.5 rounded-2xl p-2.5 text-left transition-colors duration-150  hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group flex w-full items-center gap-3.5 rounded-2xl p-2.5 text-left transition-colors duration-150 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Avatar user={user} online={isOnline} />
                 <span className="min-w-0 flex-1">
@@ -103,7 +103,7 @@ export function NewConversation({ onClose }) {
                     {isOnline ? "Online now" : "Start a conversation"}
                   </span>
                 </span>
-                <span className="flex size-8 items-center justify-center rounded-md bg-surface text-muted-foreground shadow-xs transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <span className="flex size-8 items-center justify-center rounded-xl bg-muted text-muted-foreground shadow-sm transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                   <ArrowUpRight size={15} />
                 </span>
               </button>
@@ -111,8 +111,8 @@ export function NewConversation({ onClose }) {
           })
         ) : (
           <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
-            <span className="flex size-12 items-center justify-center rounded-2xl border border-border/80 bg-surface text-muted-foreground shadow-xs">
-              <UserRound size={24} />
+            <span className="flex size-14 items-center justify-center rounded-2xl border border-border bg-surface text-muted-foreground shadow-sm">
+              <UserRound size={26} />
             </span>
             <h3 className="text-sm font-semibold text-foreground">
               {query ? "No matches yet" : "Your people belong here"}
@@ -142,7 +142,7 @@ export function Settings({ onClose }) {
       await signOut();
       reset();
     } catch {
-      setError("Couldn’t sign out. Please try again.");
+      setError("Couldn't sign out. Please try again.");
       setLeaving(false);
     }
   }
@@ -154,7 +154,7 @@ export function Settings({ onClose }) {
       onClose={onClose}
     >
       {/* Profile Card */}
-      <div className="my-5 flex items-center gap-4 rounded-2xl border border-border/80 bg-surface/75 p-4 shadow-xs ">
+      <div className="my-5 flex items-center gap-4 rounded-2xl border border-border/60 bg-surface/60 p-4 shadow-sm">
         <Avatar user={profile} size="avatar-large" />
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-base font-bold text-foreground">
@@ -166,7 +166,7 @@ export function Settings({ onClose }) {
           <Button
             variant="ghost"
             size="small"
-            className="-ml-3 mt-1.5 h-7 gap-1 text-xs text-primary font-medium hover:bg-muted"
+            className="-ml-3 mt-1.5 h-7 gap-1 text-xs font-medium text-primary hover:bg-muted"
             onClick={() => {
               onClose();
               openUserProfile();
@@ -179,7 +179,7 @@ export function Settings({ onClose }) {
       </div>
 
       {/* Appearance Section */}
-      <section className="border-t border-border/80 py-5">
+      <section className="border-t border-border/60 py-5">
         <h3 className="text-sm font-semibold text-foreground">Appearance</h3>
         <p className="mb-3.5 mt-0.5 text-xs text-muted-foreground">
           Choose your interface theme.
@@ -197,14 +197,14 @@ export function Settings({ onClose }) {
       </section>
 
       {/* Install App Section */}
-      <section className="border-t border-border/80 py-5">
+      <section className="border-t border-border/60 py-5">
         <h3 className="mb-3 text-sm font-semibold text-foreground">
           Chime, wherever you are
         </h3>
         <InstallButton />
         <p className="mt-3.5 text-xs leading-relaxed text-muted-foreground">
           Your messages stay private to your account. Signing out clears this
-          device’s open conversations.
+          device's open conversations.
         </p>
       </section>
 
@@ -213,7 +213,7 @@ export function Settings({ onClose }) {
       {/* Sign Out Button */}
       <Button
         variant="danger"
-        className="w-full h-11 gap-2 shadow-xs"
+        className="w-full h-11 gap-2"
         disabled={leaving}
         onClick={logout}
       >

@@ -33,7 +33,7 @@ function validate(file) {
   const typeValid = TYPES.has(file.type);
   const extValid = EXTENSIONS.has(ext);
   if (!typeValid && !extValid)
-    return "This format isn’t supported. Choose JPG, PNG, GIF, WebP, AVIF, MP4, WebM, or MOV. Export HEIC photos as JPG first.";
+    return "This format isn't supported. Choose JPG, PNG, GIF, WebP, AVIF, MP4, WebM, or MOV. Export HEIC photos as JPG first.";
   if (!file.size)
     return "This file is empty. Choose a photo or video with content.";
   if (file.size > 25 * 1024 * 1024)
@@ -61,7 +61,7 @@ export function AttachmentPreview({ file, compact = false }) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center overflow-hidden rounded-2xl border bg-muted/50",
+        "flex items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-muted/40",
         compact ? "h-32" : "h-44 sm:h-52",
       )}
     >
@@ -162,7 +162,7 @@ export default function AttachmentUpload({
             choose(event.dataTransfer.files);
           }}
           className={cn(
-            "rounded-3xl transition-shadow",
+            "rounded-2xl transition-shadow",
             dragging && "ring-2 ring-primary ring-offset-4 ring-offset-surface",
           )}
         >
@@ -182,10 +182,10 @@ export default function AttachmentUpload({
             }}
           />
           {file ? (
-            <div className="space-y-3 rounded-3xl border bg-background/40 p-3">
+            <div className="space-y-3 rounded-2xl border border-border/60 bg-surface/40 p-3">
               <AttachmentPreview file={file} />
               <div className="flex items-center gap-3 px-1">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border bg-surface/70 text-primary">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-surface/70 text-primary">
                   <FileImage size={19} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -224,9 +224,9 @@ export default function AttachmentUpload({
               type="button"
               aria-describedby={`${id}-formats`}
               onClick={() => fileInput.current.click()}
-              className="flex w-full flex-col items-center rounded-3xl border border-dashed border-primary/35 bg-accent/20 px-5 py-8 text-center transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex w-full flex-col items-center rounded-2xl border-2 border-dashed border-primary/30 bg-accent/30 px-5 py-8 text-center transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="mb-4 flex size-14 items-center justify-center rounded-2xl border bg-surface/75 text-primary shadow-xs ">
+              <span className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm">
                 <ImagePlus size={26} strokeWidth={1.5} />
               </span>
               <span className="text-sm font-semibold">
@@ -235,7 +235,7 @@ export default function AttachmentUpload({
               <span className="mt-1.5 text-xs text-muted-foreground">
                 Or drop a file here
               </span>
-              <span className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground">
+              <span className="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-lg shadow-primary/25">
                 <Upload size={14} />
                 Browse files
               </span>
@@ -286,7 +286,7 @@ export default function AttachmentUpload({
             value={caption}
             onChange={(event) => setCaption(event.target.value)}
             placeholder="Add a little context…"
-            className="mt-2 rounded-2xl border bg-surface/60 p-3 focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-2 rounded-xl border border-border bg-surface/60 p-3 focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
         {!online && (
@@ -295,7 +295,7 @@ export default function AttachmentUpload({
             className="flex items-start gap-2 rounded-2xl bg-accent/50 p-3 text-xs leading-5 text-accent-foreground"
           >
             <WifiOff size={16} className="mt-0.5 shrink-0" />
-            You’re offline. Reconnect to send; your selection will stay here
+            You're offline. Reconnect to send; your selection will stay here
             while this window is open.
           </p>
         )}
@@ -378,11 +378,11 @@ export function PendingAttachment({ message, online, onRetry }) {
             aria-valuenow={
               transferred ? undefined : (message.uploadProgress ?? 0)
             }
-            className="h-1.5 overflow-hidden rounded-md bg-muted"
+            className="h-1.5 overflow-hidden rounded-full bg-muted"
           >
             <div
               className={cn(
-                "h-full rounded-md bg-primary transition-[width] motion-reduce:transition-none",
+                "h-full rounded-full bg-primary transition-[width] motion-reduce:transition-none",
                 transferred && "animate-pulse motion-reduce:animate-none",
               )}
               style={{ width: `${message.uploadProgress ?? 0}%` }}

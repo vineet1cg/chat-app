@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   Camera,
   ChevronDown,
+  Command,
   Film,
   MessageCircle,
   Paperclip,
@@ -15,6 +16,7 @@ import { motion } from "framer-motion";
 import { useChat } from "../stores/chat";
 import {
   Avatar,
+  Brand,
   Button,
   ErrorNotice,
   IconButton,
@@ -22,7 +24,7 @@ import {
   SegmentedControl,
   Spinner,
 } from "./ui";
-import { InstallButton } from "./Pwa";
+import { ThemeMenu } from "./ui";
 import { timeLabel } from "../lib/format";
 import { cn } from "../lib/utils";
 
@@ -106,33 +108,53 @@ export default function Sidebar({ onNew, onSettings }) {
     <aside
       aria-label="Conversations"
       className={cn(
-        "flex min-h-0 min-w-0 w-full flex-1 flex-col bg-sidebar",
+        "flex min-h-0 min-w-0 w-full flex-1 flex-col",
         state.activeId && "hidden md:flex",
       )}
     >
-      {/* Title & Compose Button */}
-      <div className="flex items-center justify-between px-4 py-4">
-        <div className="flex items-center gap-2.5">
-          <h1 className="text-lg font-medium tracking-tight text-foreground">
-            Messages
-          </h1>
-          {unreadCount > 0 && (
-            <span className="flex items-center justify-center rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
-              {unreadCount} new
-            </span>
-          )}
+      {/* Sidebar Header */}
+      <div className="safe-top flex items-center justify-between gap-2 px-4 py-4">
+        <Brand small />
+        <div className="flex items-center gap-1">
+          <IconButton
+            label="Command palette"
+            aria-keyshortcuts="Control+k Meta+k"
+            onClick={() => {
+              const event = new KeyboardEvent("keydown", {
+                key: "k",
+                ctrlKey: true,
+                bubbles: true,
+              });
+              document.dispatchEvent(event);
+            }}
+          >
+            <Command size={18} />
+          </IconButton>
+          <ThemeMenu />
+          <IconButton
+            label="New message"
+            onClick={onNew}
+            className="border border-border bg-surface text-foreground shadow-sm hover:border-primary/40 hover:bg-muted"
+          >
+            <SquarePen size={18} />
+          </IconButton>
         </div>
-        <IconButton
-          label="New message"
-          onClick={onNew}
-          className="border border-border/80 bg-surface text-foreground shadow-xs hover:border-primary/40 hover:bg-muted"
-        >
-          <SquarePen size={18} />
-        </IconButton>
+      </div>
+
+      {/* Title & Unread Count */}
+      <div className="flex items-center justify-between px-4 pb-3">
+        <h1 className="text-xl font-bold tracking-tight text-foreground">
+          Messages
+        </h1>
+        {unreadCount > 0 && (
+          <span className="flex items-center justify-center rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">
+            {unreadCount} new
+          </span>
+        )}
       </div>
 
       {/* Search Input */}
-      <div className="relative mx-5 mb-3 md:mx-6">
+      <div className="relative mx-4 mb-3">
         <Search
           size={16}
           className="pointer-events-none absolute left-3.5 top-3.5 z-10 text-muted-foreground"
@@ -143,25 +165,25 @@ export default function Sidebar({ onNew, onSettings }) {
           placeholder="Search conversations"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="h-10 bg-surface/75 pl-10 pr-10 text-xs sm:text-xs"
+          className="h-10 bg-surface/70 pl-10 pr-10 text-sm"
         />
         {query ? (
           <IconButton
             label="Clear search"
             onClick={() => setQuery("")}
-            className="absolute right-1 top-0 size-10"
+            className="absolute right-0.5 top-0.5 size-9"
           >
             <X size={14} />
           </IconButton>
         ) : (
-          <span className="pointer-events-none absolute right-3 top-2.5 hidden select-none rounded border border-border/80 bg-muted/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
+          <kbd className="pointer-events-none absolute right-3 top-2.5 hidden select-none text-[10px] text-muted-foreground sm:inline-block">
             /
-          </span>
+          </kbd>
         )}
       </div>
 
-      {/* Segmented Filter Control */}
-      <div className="mx-5 mb-2 md:mx-6">
+      {/* Filter Tabs */}
+      <div className="mx-4 mb-2">
         <SegmentedControl
           label="Filter conversations"
           value={filter}
@@ -177,19 +199,17 @@ export default function Sidebar({ onNew, onSettings }) {
         />
       </div>
 
-      {/* Section Counter Bar */}
-      <div className="flex items-center justify-between px-6 py-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+      {/* Section Label */}
+      <div className="flex items-center justify-between px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
         <span>
-          {filter === "unread"
-            ? "Unread conversations"
-            : "Recent conversations"}
+          {filter === "unread" ? "Unread conversations" : "Recent"}
         </span>
         <span className="tabular-nums">{conversations.length}</span>
       </div>
 
       {/* Conversations List */}
       <div
-        className="min-h-0 flex-1 overflow-y-auto px-2 pb-3"
+        className="scrollbar-none min-h-0 flex-1 overflow-y-auto px-2 pb-3"
         aria-label="Conversation list"
         onKeyDown={(event) => {
           if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key))
@@ -231,22 +251,21 @@ export default function Sidebar({ onNew, onSettings }) {
                 onClick={() => {
                   state.selectConversation(user);
                   requestAnimationFrame(() =>
-                    document.getElementById("chat-tile")?.focus(),
+                    document.getElementById("chat-panel")?.focus(),
                   );
                 }}
                 aria-current={isSelected ? "true" : undefined}
                 className={cn(
-                  "group relative my-1 flex w-full items-center gap-3 rounded-md border border-transparent p-3 text-left transition-colors duration-150  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "group relative my-0.5 flex w-full items-center gap-3 rounded-2xl border border-transparent p-3 text-left transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   isSelected
-                    ? "border-primary/35 bg-accent"
-                    : "hover:bg-muted/70",
+                    ? "border-primary/20 bg-accent"
+                    : "hover:bg-muted/60",
                 )}
               >
-                {/* Active indicator bar */}
                 {isSelected && (
                   <motion.span
                     layoutId="active-conversation-pill"
-                    className="absolute left-0 h-8 w-1 rounded-r-full bg-primary"
+                    className="absolute left-0 h-9 w-1 rounded-r-full bg-primary"
                     transition={{ type: "spring", stiffness: 400, damping: 35 }}
                   />
                 )}
@@ -254,7 +273,7 @@ export default function Sidebar({ onNew, onSettings }) {
                 <Avatar
                   user={user}
                   online={state.onlineUsers.includes(user._id)}
-                  className="size-11"
+                  className="size-12"
                 />
 
                 <span className="min-w-0 flex-1">
@@ -283,7 +302,7 @@ export default function Sidebar({ onNew, onSettings }) {
                     </span>
 
                     {hasUnread && (
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground shadow-xs">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-sm">
                         {state.unread[user._id] > 99
                           ? "99+"
                           : state.unread[user._id]}
@@ -296,14 +315,14 @@ export default function Sidebar({ onNew, onSettings }) {
           })
         ) : (
           <div className="flex flex-col items-center px-6 py-12 text-center">
-            <span className="mb-4 flex size-12 items-center justify-center rounded-2xl border border-border/80 bg-surface p-3 text-muted-foreground shadow-xs">
-              <MessageCircle size={24} strokeWidth={1.5} />
+            <span className="mb-4 flex size-14 items-center justify-center rounded-2xl border border-border bg-surface text-muted-foreground shadow-sm">
+              <MessageCircle size={26} strokeWidth={1.5} />
             </span>
             <h3 className="text-sm font-semibold text-foreground">
               {query
                 ? "No conversations found"
                 : filter === "unread"
-                  ? "You’re all caught up"
+                  ? "You're all caught up"
                   : "A fresh start"}
             </h3>
             <p className="mt-1.5 max-w-56 text-xs leading-relaxed text-muted-foreground">
@@ -317,7 +336,7 @@ export default function Sidebar({ onNew, onSettings }) {
               <Button
                 variant="outline"
                 size="small"
-                className="mt-4 gap-1.5 text-xs text-primary shadow-xs"
+                className="mt-4 gap-1.5 text-xs"
                 onClick={onNew}
               >
                 Start a conversation
@@ -328,17 +347,16 @@ export default function Sidebar({ onNew, onSettings }) {
         )}
       </div>
 
-      {/* User Status & Preferences Footer */}
-      <div className="safe-bottom border-t border-border/80 bg-surface/50 p-3 ">
-        <InstallButton />
+      {/* User Profile Footer */}
+      <div className="safe-bottom border-t border-border/60 bg-surface/40 p-2.5">
         <button
           onClick={onSettings}
           aria-label="Account and appearance settings"
-          className="mt-2 flex w-full items-center gap-3 rounded-2xl border border-transparent p-2 text-left transition-colors duration-150  hover:border-border/60 hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex w-full items-center gap-3 rounded-2xl border border-transparent p-2 text-left transition-colors duration-150 hover:border-border/60 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Avatar user={state.profile} size="avatar-small" />
           <span className="min-w-0 flex-1">
-            <strong className="block truncate text-xs font-semibold text-foreground">
+            <strong className="block truncate text-sm font-semibold text-foreground">
               {state.profile?.fullName || "Your Account"}
             </strong>
             <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -352,9 +370,9 @@ export default function Sidebar({ onNew, onSettings }) {
                       : "Connecting"
                 }
                 className={cn(
-                  "size-1.5 rounded-md",
+                  "size-1.5 rounded-full",
                   state.connection === "connected"
-                    ? "bg-status "
+                    ? "bg-status"
                     : !state.networkOnline
                       ? "bg-destructive"
                       : "bg-muted-foreground animate-pulse",
@@ -367,7 +385,7 @@ export default function Sidebar({ onNew, onSettings }) {
                   : "Connecting…"}
             </span>
           </span>
-          <ChevronDown size={15} className="text-muted-foreground" />
+          <ChevronDown size={16} className="text-muted-foreground" />
         </button>
       </div>
     </aside>
